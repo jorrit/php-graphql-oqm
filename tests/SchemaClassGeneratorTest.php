@@ -616,7 +616,7 @@ class SchemaClassGeneratorTest extends CodeFileTestCase
 
     /**
      * @covers \GraphQL\SchemaGenerator\SchemaClassGenerator::generateQueryObject
-     * @covers \GraphQL\SchemaGenerator\SchemaClassGenerator::appendQueryObjectFields
+     * @covers \GraphQL\SchemaGenerator\SchemaClassGenerator::appendObjectFields
      * @covers \GraphQL\SchemaGenerator\SchemaClassGenerator::generateObject
      */
     public function testGenerateQueryObjectWithScalarFields()
@@ -703,7 +703,7 @@ class SchemaClassGeneratorTest extends CodeFileTestCase
 
     /**
      * @covers \GraphQL\SchemaGenerator\SchemaClassGenerator::generateQueryObject
-     * @covers \GraphQL\SchemaGenerator\SchemaClassGenerator::appendQueryObjectFields
+     * @covers \GraphQL\SchemaGenerator\SchemaClassGenerator::appendObjectFields
      * @covers \GraphQL\SchemaGenerator\SchemaClassGenerator::generateObject
      */
     public function testGenerateQueryObjectWithObjectFields()
@@ -790,7 +790,7 @@ class SchemaClassGeneratorTest extends CodeFileTestCase
     /**
      * @covers \GraphQL\SchemaGenerator\SchemaClassGenerator::generateRootQueryObject
      */
-    public function testGenerateRootObject()
+    public function testGenerateRootQueryObject()
     {
         $this->mockHandler->append(new Response(200, [], json_encode([
             'data' => [
@@ -809,6 +809,32 @@ class SchemaClassGeneratorTest extends CodeFileTestCase
         $objectName = 'RootQueryObject';
         $this->assertFileEquals(
             static::getExpectedFilesDir() . "/query_objects/$objectName.php",
+            static::getGeneratedFilesDir() . "/$objectName.php"
+        );
+    }
+
+    /**
+     * @covers \GraphQL\SchemaGenerator\SchemaClassGenerator::generateRootQueryObject
+     */
+    public function testGenerateRootMutationObject()
+    {
+        $this->mockHandler->append(new Response(200, [], json_encode([
+            'data' => [
+                '__schema' => [
+                    'mutationType' => [
+                        'name' => 'Mutation',
+                        'kind' => FieldTypeKindEnum::OBJECT,
+                        'description' => null,
+                        'fields' => []
+                    ]
+                ]
+            ]
+        ])));
+        $this->classGenerator->generateRootMutationObject();
+
+        $objectName = 'RootMutationObject';
+        $this->assertFileEquals(
+            static::getExpectedFilesDir() . "/mutation_objects/$objectName.php",
             static::getGeneratedFilesDir() . "/$objectName.php"
         );
     }
@@ -1008,6 +1034,11 @@ class TransparentSchemaClassGenerator extends SchemaClassGenerator
     public function generateRootQueryObject(): bool
     {
         return parent::generateRootQueryObject();
+    }
+
+    public function generateRootMutationObject(): bool
+    {
+        return parent::generateRootMutationObject();
     }
 
     public function generateQueryObject(string $objectName): bool

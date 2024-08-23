@@ -9,6 +9,7 @@ use GraphQL\SchemaGenerator\CodeGenerator\EnumObjectBuilder;
 use GraphQL\SchemaGenerator\CodeGenerator\InputObjectClassBuilder;
 use GraphQL\SchemaGenerator\CodeGenerator\InterfaceObjectBuilder;
 use GraphQL\SchemaGenerator\CodeGenerator\ObjectBuilderInterface;
+use GraphQL\SchemaGenerator\CodeGenerator\ObjectClassBuilder;
 use GraphQL\SchemaGenerator\CodeGenerator\QueryObjectClassBuilder;
 use GraphQL\SchemaGenerator\CodeGenerator\UnionObjectBuilder;
 use GraphQL\SchemaObject\QueryObject;
@@ -32,12 +33,12 @@ class SchemaClassGenerator
     /**
      * @var string
      */
-	private $writeDir;
+    private $writeDir;
 
     /**
      * @var string
      */
-	private $generationNamespace;
+    private $generationNamespace;
 
     /**
      * This array is used as a set to store the already generated objects
@@ -54,24 +55,31 @@ class SchemaClassGenerator
      * @param string $writeDir
      * @param string $namespace
      */
-	public function __construct(Client $client, string $writeDir = '', string $namespace = ObjectBuilderInterface::DEFAULT_NAMESPACE)
+    public function __construct(Client $client, string $writeDir = '', string $namespace = ObjectBuilderInterface::DEFAULT_NAMESPACE)
     {
-        $this->schemaInspector     = new SchemaInspector($client);
-        $this->generatedObjects    = [];
-        $this->writeDir            = $writeDir;
+        $this->schemaInspector = new SchemaInspector($client);
+        $this->generatedObjects = [];
+        $this->writeDir = $writeDir;
         $this->generationNamespace = $namespace;
         $this->setWriteDir();
+    }
+
+    public function generateRootObjects(): bool
+    {
+        $this->generateRootQueryObject();
+        $this->generateRootMutationObject();
+
+        return true;
     }
 
     /**
      * @return bool
      */
-	public function generateRootQueryObject(): bool
-	{
-	    $objectArray    = $this->schemaInspector->getQueryTypeSchema();
+    public function generateRootQueryObject(): bool
+    {
+        $objectArray = $this->schemaInspector->getRootSchema('query');
         $rootObjectName = QueryObject::ROOT_QUERY_OBJECT_NAME;
-        $queryTypeName  = $objectArray['name'];
-        //$rootObjectDescr = $objectArray['description'];
+        $queryTypeName = $objectArray['name'];
 
         if (array_key_exists($queryTypeName, $this->generatedObjects)) {
             return true;
@@ -80,7 +88,29 @@ class SchemaClassGenerator
         $this->generatedObjects[$queryTypeName] = true;
 
         $queryObjectBuilder = new QueryObjectClassBuilder($this->writeDir, $rootObjectName, $this->generationNamespace);
-        $this->appendQueryObjectFields($queryObjectBuilder, $rootObjectName, $objectArray['fields']);
+        $this->appendObjectFields($queryObjectBuilder, $rootObjectName, $objectArray['fields']);
+        $queryObjectBuilder->build();
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function generateRootMutationObject(): bool
+    {
+        $objectArray = $this->schemaInspector->getRootSchema('mutation');
+        $rootObjectName = QueryObject::ROOT_MUTATION_OBJECT_NAME;
+        $queryTypeName = $objectArray['name'];
+
+        if (array_key_exists($queryTypeName, $this->generatedObjects)) {
+            return true;
+        }
+
+        $this->generatedObjects[$queryTypeName] = true;
+
+        $queryObjectBuilder = new QueryObjectClassBuilder($this->writeDir, $rootObjectName, $this->generationNamespace);
+        $this->appendObjectFields($queryObjectBuilder, $rootObjectName, $objectArray['fields']);
         $queryObjectBuilder->build();
 
         return true;
@@ -89,18 +119,17 @@ class SchemaClassGenerator
     /**
      * This method receives the array of object fields as an input and adds the fields to the query object building
      *
-     * @param QueryObjectClassBuilder $queryObjectBuilder
-     * @param string                  $currentTypeName
-     * @param array                   $fieldsArray
+     * @param ObjectClassBuilder $queryObjectBuilder
+     * @param string $currentTypeName
+     * @param array $fieldsArray
      */
-	private function appendQueryObjectFields(QueryObjectClassBuilder $queryObjectBuilder, string $currentTypeName, array $fieldsArray)
+    private function appendObjectFields(ObjectClassBuilder $queryObjectBuilder, string $currentTypeName, array $fieldsArray)
     {
         foreach ($fieldsArray as $fieldArray) {
             $name = $fieldArray['name'];
-            // Skip fields with name "query"
-            if ($name === 'query') continue;
+            // Skip fields with name "query" or "field"
+            if ($name === 'query' || $name === 'field') continue;
 
-            //$description = $fieldArray['description'];
             [$typeName, $typeKind] = $this->getTypeInfo($fieldArray);
 
             if ($typeKind === FieldTypeKindEnum::SCALAR) {
@@ -168,8 +197,8 @@ class SchemaClassGenerator
         }
 
         $this->generatedObjects[$objectName] = true;
-        $objectArray   = $this->schemaInspector->getObjectSchema($objectName);
-        $objectName    = $objectArray['name'];
+        $objectArray = $this->schemaInspector->getObjectSchema($objectName);
+        $objectName = $objectArray['name'];
 
         if ($objectArray['kind'] === FieldTypeKindEnum::INTERFACE_OBJECT) {
             $objectBuilder = new InterfaceObjectBuilder($this->writeDir, $objectName, $this->generationNamespace);
@@ -180,7 +209,7 @@ class SchemaClassGenerator
             $objectBuilder = new QueryObjectClassBuilder($this->writeDir, $objectName, $this->generationNamespace);
         }
 
-        $this->appendQueryObjectFields($objectBuilder, $objectName, $objectArray['fields']);
+        $this->appendObjectFields($objectBuilder, $objectName, $objectArray['fields']);
         $objectBuilder->build();
 
         return true;
@@ -198,8 +227,8 @@ class SchemaClassGenerator
         }
 
         $this->generatedObjects[$objectName] = true;
-        $objectArray   = $this->schemaInspector->getInputObjectSchema($objectName);
-        $objectName    = $objectArray['name'];
+        $objectArray = $this->schemaInspector->getInputObjectSchema($objectName);
+        $objectName = $objectArray['name'];
         $objectBuilder = new InputObjectClassBuilder($this->writeDir, $objectName, $this->generationNamespace);
 
         foreach ($objectArray['inputFields'] as $inputFieldArray) {
@@ -244,12 +273,12 @@ class SchemaClassGenerator
 
         $this->generatedObjects[$objectName] = true;
 
-        $objectArray   = $this->schemaInspector->getEnumObjectSchema($objectName);
-        $objectName    = $objectArray['name'];
+        $objectArray = $this->schemaInspector->getEnumObjectSchema($objectName);
+        $objectName = $objectArray['name'];
         $objectBuilder = new EnumObjectBuilder($this->writeDir, $objectName, $this->generationNamespace);
 
         foreach ($objectArray['enumValues'] as $enumValue) {
-            $name        = $enumValue['name'];
+            $name = $enumValue['name'];
             //$description = $enumValue['description'];
             $objectBuilder->addEnumValue($name);
         }
@@ -271,8 +300,8 @@ class SchemaClassGenerator
 
         $this->generatedObjects[$objectName] = true;
 
-        $objectArray   = $this->schemaInspector->getUnionObjectSchema($objectName);
-        $objectName    = $objectArray['name'];
+        $objectArray = $this->schemaInspector->getUnionObjectSchema($objectName);
+        $objectName = $objectArray['name'];
         $objectBuilder = new UnionObjectBuilder($this->writeDir, $objectName, $this->generationNamespace);
 
         foreach ($objectArray['possibleTypes'] as $possibleType) {
@@ -297,8 +326,8 @@ class SchemaClassGenerator
 
         $this->generatedObjects[$objectName] = true;
 
-        $objectArray   = $this->schemaInspector->getObjectSchema($objectName);
-        $objectName    = $objectArray['name'];
+        $objectArray = $this->schemaInspector->getObjectSchema($objectName);
+        $objectName = $objectArray['name'];
         $objectBuilder = new UnionObjectBuilder($this->writeDir, $objectName, $this->generationNamespace);
 
         foreach ($objectArray['possibleTypes'] as $possibleType) {
@@ -312,7 +341,7 @@ class SchemaClassGenerator
 
     /**
      * @param string $argsObjectName
-     * @param array  $arguments
+     * @param array $arguments
      *
      * @return bool
      */
@@ -382,7 +411,7 @@ class SchemaClassGenerator
     /**
      * Sets the write directory if it's not set for the class
      */
-	private function setWriteDir(): void
+    private function setWriteDir(): void
     {
         if ($this->writeDir !== '') return;
 

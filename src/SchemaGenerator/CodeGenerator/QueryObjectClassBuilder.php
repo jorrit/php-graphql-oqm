@@ -3,6 +3,7 @@
 namespace GraphQL\SchemaGenerator\CodeGenerator;
 
 use GraphQL\Enumeration\FieldTypeKindEnum;
+use GraphQL\Mutation;
 use GraphQL\SchemaGenerator\CodeGenerator\CodeFile\ClassFile;
 use GraphQL\SchemaObject\QueryObject;
 use GraphQL\Util\StringLiteralFormatter;
@@ -15,6 +16,11 @@ use GraphQL\Util\StringLiteralFormatter;
 class QueryObjectClassBuilder extends ObjectClassBuilder
 {
     /**
+     * @var bool
+     */
+    private $isRootMutation = false;
+
+    /**
      * QueryObjectClassBuilder constructor.
      *
      * @param string $writeDir
@@ -23,7 +29,13 @@ class QueryObjectClassBuilder extends ObjectClassBuilder
      */
     public function __construct(string $writeDir, string $objectName, string $namespace = self::DEFAULT_NAMESPACE)
     {
-        $className = $objectName . 'QueryObject';
+        if ($objectName === QueryObject::ROOT_MUTATION_OBJECT_NAME) {
+            $objectName = '';
+            $className = 'RootMutationObject';
+            $this->isRootMutation = true;
+        } else {
+            $className = $objectName . 'QueryObject';
+        }
 
         $this->classFile = new ClassFile($writeDir, $className);
         $this->classFile->setNamespace($namespace);
@@ -37,6 +49,16 @@ class QueryObjectClassBuilder extends ObjectClassBuilder
             $objectName = '';
         }
         $this->classFile->addConstant('OBJECT_NAME', $objectName);
+
+        if ($this->isRootMutation) {
+            $this->classFile->addImport(Mutation::class);
+            $constructor = 'public function __construct()
+{
+    parent::__construct();
+    $this->query = new Mutation();
+}';
+            $this->classFile->addMethod($constructor);
+        }
     }
 
     /**
@@ -68,11 +90,12 @@ class QueryObjectClassBuilder extends ObjectClassBuilder
      * @param bool $isDeprecated
      * @param string|null $deprecationReason
      */
-    protected function addSimpleSelector(string $propertyName, string $upperCamelName, bool $isDeprecated, ?string $deprecationReason)
+    protected function addSimpleSelector(string $fieldName, string $upperCamelName, bool $isDeprecated, ?string $deprecationReason)
     {
-        $method = "public function select$upperCamelName()
+        $methodName = $this->isRootMutation ? $fieldName : 'select' . $upperCamelName;
+        $method = "public function $methodName()
 {
-    \$this->selectField(\"$propertyName\");
+    \$this->selectField(\"$fieldName\");
 
     return \$this;
 }";
@@ -90,10 +113,11 @@ class QueryObjectClassBuilder extends ObjectClassBuilder
      */
     protected function addObjectSelector(string $fieldName, string $upperCamelName, string $fieldTypeName, string $fieldTypeKind, ?string $argsObjectName, bool $isDeprecated, ?string $deprecationReason)
     {
+        $methodName = $this->isRootMutation ? $fieldName : 'select' . $upperCamelName;
         $objectClass = $fieldTypeName . ($fieldTypeKind === FieldTypeKindEnum::UNION_OBJECT ? 'UnionObject' : 'QueryObject');
 
         if ($argsObjectName === null) {
-            $method = "public function select$upperCamelName()
+            $method = "public function $methodName()
 {
     \$object = new $objectClass(\"$fieldName\");
     \$this->selectField(\$object);
@@ -101,7 +125,7 @@ class QueryObjectClassBuilder extends ObjectClassBuilder
     return \$object;
 }";
         } else {
-            $method = "public function select$upperCamelName($argsObjectName \$argsObject = null)
+            $method = "public function $methodName($argsObjectName \$argsObject = null)
 {
     \$object = new $objectClass(\"$fieldName\");
     if (\$argsObject !== null) {

@@ -54,13 +54,14 @@ QUERY;
     }
 
     /**
+     * @param string $type query or mutation
      * @return array
      */
-    public function getQueryTypeSchema(): array
+    public function getRootSchema(string $type): array
     {
         $schemaQuery = "{
   __schema{
-    queryType{
+    ${type}Type{
       name
       kind
       description
@@ -82,7 +83,7 @@ QUERY;
 }";
         $response = $this->client->runRawQuery($schemaQuery, true);
 
-        return $response->getData()['__schema']['queryType'];
+        return $response->getData()['__schema'][$type.'Type'];
     }
 
     /**
