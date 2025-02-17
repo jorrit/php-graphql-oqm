@@ -125,7 +125,7 @@ class QueryObjectClassBuilder extends ObjectClassBuilder
     return \$object;
 }";
         } else {
-            $method = "public function $methodName($argsObjectName \$argsObject = null)
+            $method = "public function $methodName(?$argsObjectName \$argsObject = null)
 {
     \$object = new $objectClass(\"$fieldName\");
     if (\$argsObject !== null) {

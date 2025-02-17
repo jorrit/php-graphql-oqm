@@ -252,7 +252,7 @@ class RootQueryObject extends QueryObject
 {
     const OBJECT_NAME = "query";
 
-    public function selectPokemons(RootPokemonsArgumentsObject $argsObject = null)
+    public function selectPokemons(?RootPokemonsArgumentsObject $argsObject = null)
     {
         $object = new PokemonQueryObject("pokemons");
         if ($argsObject !== null) {
@@ -263,7 +263,7 @@ class RootQueryObject extends QueryObject
         return $object;
     }
 
-    public function selectPokemon(RootPokemonArgumentsObject $argsObject = null)
+    public function selectPokemon(?RootPokemonArgumentsObject $argsObject = null)
     {
         $object = new PokemonQueryObject("pokemon");
         if ($argsObject !== null) {
@@ -359,7 +359,7 @@ class PokemonQueryObject extends QueryObject
         return $this;
     }
 
-    public function selectWeight(PokemonWeightArgumentsObject $argsObject = null)
+    public function selectWeight(?PokemonWeightArgumentsObject $argsObject = null)
     {
         $object = new PokemonDimensionQueryObject("weight");
         if ($argsObject !== null) {
@@ -370,7 +370,7 @@ class PokemonQueryObject extends QueryObject
         return $object;
     }
 
-    public function selectHeight(PokemonHeightArgumentsObject $argsObject = null)
+    public function selectHeight(?PokemonHeightArgumentsObject $argsObject = null)
     {
         $object = new PokemonDimensionQueryObject("height");
         if ($argsObject !== null) {
@@ -402,7 +402,7 @@ class PokemonQueryObject extends QueryObject
         return $this;
     }
 
-    public function selectAttacks(PokemonAttacksArgumentsObject $argsObject = null)
+    public function selectAttacks(?PokemonAttacksArgumentsObject $argsObject = null)
     {
         $object = new PokemonAttackQueryObject("attacks");
         if ($argsObject !== null) {
@@ -434,7 +434,7 @@ class PokemonQueryObject extends QueryObject
         return $this;
     }
 
-    public function selectEvolutions(PokemonEvolutionsArgumentsObject $argsObject = null)
+    public function selectEvolutions(?PokemonEvolutionsArgumentsObject $argsObject = null)
     {
         $object = new PokemonQueryObject("evolutions");
         if ($argsObject !== null) {
@@ -445,7 +445,7 @@ class PokemonQueryObject extends QueryObject
         return $object;
     }
 
-    public function selectEvolutionRequirements(PokemonEvolutionRequirementsArgumentsObject $argsObject = null)
+    public function selectEvolutionRequirements(?PokemonEvolutionRequirementsArgumentsObject $argsObject = null)
     {
         $object = new PokemonEvolutionRequirementQueryObject("evolutionRequirements");
         if ($argsObject !== null) {
