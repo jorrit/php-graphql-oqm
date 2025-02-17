@@ -252,7 +252,7 @@ class RootQueryObject extends QueryObject
 {
     const OBJECT_NAME = "query";
 
-    public function selectPokemons(?RootPokemonsArgumentsObject $argsObject = null)
+    public function selectPokemons(?RootPokemonsArgumentsObject $argsObject = null): PokemonQueryObject
     {
         $object = new PokemonQueryObject("pokemons");
         if ($argsObject !== null) {
@@ -263,7 +263,7 @@ class RootQueryObject extends QueryObject
         return $object;
     }
 
-    public function selectPokemon(?RootPokemonArgumentsObject $argsObject = null)
+    public function selectPokemon(?RootPokemonArgumentsObject $argsObject = null): PokemonQueryObject
     {
         $object = new PokemonQueryObject("pokemon");
         if ($argsObject !== null) {
@@ -287,7 +287,7 @@ class RootPokemonsArgumentsObject extends ArgumentsObject
 {
     protected $first;
 
-    public function setFirst($first)
+    public function setFirst($first): self
     {
         $this->first = $first;
     
@@ -308,14 +308,14 @@ class RootPokemonArgumentsObject extends ArgumentsObject
     protected $id;
     protected $name;
 
-    public function setId($id)
+    public function setId($id): self
     {
         $this->id = $id;
     
         return $this;
     }
 
-    public function setName($name)
+    public function setName($name): self
     {
         $this->name = $name;
     
@@ -338,28 +338,28 @@ class PokemonQueryObject extends QueryObject
 {
     const OBJECT_NAME = "Pokemon";
 
-    public function selectId()
+    public function selectId(): self
     {
         $this->selectField("id");
     
         return $this;
     }
 
-    public function selectNumber()
+    public function selectNumber(): self
     {
         $this->selectField("number");
     
         return $this;
     }
 
-    public function selectName()
+    public function selectName(): self
     {
         $this->selectField("name");
     
         return $this;
     }
 
-    public function selectWeight(?PokemonWeightArgumentsObject $argsObject = null)
+    public function selectWeight(?PokemonWeightArgumentsObject $argsObject = null): PokemonDimensionQueryObject
     {
         $object = new PokemonDimensionQueryObject("weight");
         if ($argsObject !== null) {
@@ -370,7 +370,7 @@ class PokemonQueryObject extends QueryObject
         return $object;
     }
 
-    public function selectHeight(?PokemonHeightArgumentsObject $argsObject = null)
+    public function selectHeight(?PokemonHeightArgumentsObject $argsObject = null): PokemonDimensionQueryObject
     {
         $object = new PokemonDimensionQueryObject("height");
         if ($argsObject !== null) {
@@ -381,28 +381,28 @@ class PokemonQueryObject extends QueryObject
         return $object;
     }
 
-    public function selectClassification()
+    public function selectClassification(): self
     {
         $this->selectField("classification");
     
         return $this;
     }
 
-    public function selectTypes()
+    public function selectTypes(): self
     {
         $this->selectField("types");
     
         return $this;
     }
 
-    public function selectResistant()
+    public function selectResistant(): self
     {
         $this->selectField("resistant");
     
         return $this;
     }
 
-    public function selectAttacks(?PokemonAttacksArgumentsObject $argsObject = null)
+    public function selectAttacks(?PokemonAttacksArgumentsObject $argsObject = null): PokemonAttackQueryObject
     {
         $object = new PokemonAttackQueryObject("attacks");
         if ($argsObject !== null) {
@@ -413,28 +413,28 @@ class PokemonQueryObject extends QueryObject
         return $object;
     }
 
-    public function selectWeaknesses()
+    public function selectWeaknesses(): self
     {
         $this->selectField("weaknesses");
     
         return $this;
     }
 
-    public function selectFleeRate()
+    public function selectFleeRate(): self
     {
         $this->selectField("fleeRate");
     
         return $this;
     }
 
-    public function selectMaxCP()
+    public function selectMaxCP(): self
     {
         $this->selectField("maxCP");
     
         return $this;
     }
 
-    public function selectEvolutions(?PokemonEvolutionsArgumentsObject $argsObject = null)
+    public function selectEvolutions(?PokemonEvolutionsArgumentsObject $argsObject = null): PokemonQueryObject
     {
         $object = new PokemonQueryObject("evolutions");
         if ($argsObject !== null) {
@@ -445,7 +445,7 @@ class PokemonQueryObject extends QueryObject
         return $object;
     }
 
-    public function selectEvolutionRequirements(?PokemonEvolutionRequirementsArgumentsObject $argsObject = null)
+    public function selectEvolutionRequirements(?PokemonEvolutionRequirementsArgumentsObject $argsObject = null): PokemonEvolutionRequirementQueryObject
     {
         $object = new PokemonEvolutionRequirementQueryObject("evolutionRequirements");
         if ($argsObject !== null) {
@@ -456,14 +456,14 @@ class PokemonQueryObject extends QueryObject
         return $object;
     }
 
-    public function selectMaxHP()
+    public function selectMaxHP(): self
     {
         $this->selectField("maxHP");
     
         return $this;
     }
 
-    public function selectImage()
+    public function selectImage(): self
     {
         $this->selectField("image");
     

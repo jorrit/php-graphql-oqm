@@ -16,7 +16,7 @@ class TestInterfaceQueryObject extends InterfaceObject
         return $this->addImplementation(InterfaceObject2QueryObject::class);
     }
 
-    public function selectInterfaceField()
+    public function selectInterfaceField(): self
     {
         $this->selectField("interface_field");
 

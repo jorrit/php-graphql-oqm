@@ -8,7 +8,7 @@ class InterfaceObject1QueryObject extends QueryObject
 {
     const OBJECT_NAME = "InterfaceObject1";
 
-    public function selectValue()
+    public function selectValue(): self
     {
         $this->selectField("value");
 

@@ -85,7 +85,7 @@ class QueryObjectClassBuilder extends ObjectClassBuilder
     }
 
     /**
-     * @param string $propertyName
+     * @param string $fieldName
      * @param string $upperCamelName
      * @param bool $isDeprecated
      * @param string|null $deprecationReason
@@ -93,7 +93,7 @@ class QueryObjectClassBuilder extends ObjectClassBuilder
     protected function addSimpleSelector(string $fieldName, string $upperCamelName, bool $isDeprecated, ?string $deprecationReason)
     {
         $methodName = $this->isRootMutation ? $fieldName : 'select' . $upperCamelName;
-        $method = "public function $methodName()
+        $method = "public function $methodName(): self
 {
     \$this->selectField(\"$fieldName\");
 
@@ -117,7 +117,7 @@ class QueryObjectClassBuilder extends ObjectClassBuilder
         $objectClass = $fieldTypeName . ($fieldTypeKind === FieldTypeKindEnum::UNION_OBJECT ? 'UnionObject' : 'QueryObject');
 
         if ($argsObjectName === null) {
-            $method = "public function $methodName()
+            $method = "public function $methodName(): $objectClass
 {
     \$object = new $objectClass(\"$fieldName\");
     \$this->selectField(\$object);
@@ -125,7 +125,7 @@ class QueryObjectClassBuilder extends ObjectClassBuilder
     return \$object;
 }";
         } else {
-            $method = "public function $methodName(?$argsObjectName \$argsObject = null)
+            $method = "public function $methodName(?$argsObjectName \$argsObject = null): $objectClass
 {
     \$object = new $objectClass(\"$fieldName\");
     if (\$argsObject !== null) {

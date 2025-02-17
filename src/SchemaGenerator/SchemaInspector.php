@@ -61,7 +61,7 @@ QUERY;
     {
         $schemaQuery = "{
   __schema{
-    ${type}Type{
+    {$type}Type{
       name
       kind
       description

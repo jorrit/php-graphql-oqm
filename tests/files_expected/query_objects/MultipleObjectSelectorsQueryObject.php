@@ -8,7 +8,7 @@ class MultipleObjectSelectorsQueryObject extends QueryObject
 {
     const OBJECT_NAME = "MultipleObjectSelectors";
 
-    public function selectRight()
+    public function selectRight(): MultipleObjectSelectorsRightQueryObject
     {
         $object = new MultipleObjectSelectorsRightQueryObject("right");
         $this->selectField($object);
@@ -19,7 +19,7 @@ class MultipleObjectSelectorsQueryObject extends QueryObject
     /**
      * @deprecated
      */
-    public function selectLeftObjects()
+    public function selectLeftObjects(): LeftQueryObject
     {
         $object = new LeftQueryObject("left_objects");
         $this->selectField($object);

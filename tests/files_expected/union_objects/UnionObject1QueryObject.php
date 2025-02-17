@@ -8,7 +8,7 @@ class UnionObject1QueryObject extends QueryObject
 {
     const OBJECT_NAME = "UnionObject1";
 
-    public function selectUnion()
+    public function selectUnion(): UnionTestObjectUnionObject
     {
         $object = new UnionTestObjectUnionObject("union");
         $this->selectField($object);
