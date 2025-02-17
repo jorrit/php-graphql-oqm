@@ -7,7 +7,7 @@ use GraphQL\Mutation;
 
 class RootMutationObject extends QueryObject
 {
-    const OBJECT_NAME = "";
+    public const OBJECT_NAME = "";
 
     public function __construct()
     {

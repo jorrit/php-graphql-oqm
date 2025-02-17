@@ -13,8 +13,8 @@ class ClassWithEverything extends Base implements Intr1, Intr2
     use Trait1;
     use Trait2;
 
-    const CONST_ONE = 1;
-    const CONST_TWO = "";
+    public const CONST_ONE = 1;
+    public const CONST_TWO = "";
 
     protected $propertyOne;
     protected $propertyTwo = "";

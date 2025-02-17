@@ -250,7 +250,7 @@ namespace GraphQL\SchemaObject;
 
 class RootQueryObject extends QueryObject
 {
-    const OBJECT_NAME = "query";
+    public const OBJECT_NAME = "query";
 
     public function selectPokemons(?RootPokemonsArgumentsObject $argsObject = null): PokemonQueryObject
     {
@@ -336,7 +336,7 @@ namespace GraphQL\SchemaObject;
 
 class PokemonQueryObject extends QueryObject
 {
-    const OBJECT_NAME = "Pokemon";
+    public const OBJECT_NAME = "Pokemon";
 
     public function selectId(): self
     {

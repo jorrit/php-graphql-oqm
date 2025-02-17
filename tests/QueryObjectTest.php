@@ -145,7 +145,7 @@ scalar
 
 class SimpleQueryObject extends QueryObject
 {
-    const OBJECT_NAME = 'Simple';
+    public const OBJECT_NAME = 'Simple';
 
     public function selectScalar()
     {

@@ -6,7 +6,7 @@ use GraphQL\SchemaObject\QueryObject;
 
 class UnionObject1QueryObject extends QueryObject
 {
-    const OBJECT_NAME = "UnionObject1";
+    public const OBJECT_NAME = "UnionObject1";
 
     public function selectUnion(): UnionTestObjectUnionObject
     {

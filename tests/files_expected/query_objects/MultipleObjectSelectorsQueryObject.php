@@ -6,7 +6,7 @@ use GraphQL\SchemaObject\QueryObject;
 
 class MultipleObjectSelectorsQueryObject extends QueryObject
 {
-    const OBJECT_NAME = "MultipleObjectSelectors";
+    public const OBJECT_NAME = "MultipleObjectSelectors";
 
     public function selectRight(): MultipleObjectSelectorsRightQueryObject
     {

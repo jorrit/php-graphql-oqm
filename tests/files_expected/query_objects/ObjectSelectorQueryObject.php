@@ -6,7 +6,7 @@ use GraphQL\SchemaObject\QueryObject;
 
 class ObjectSelectorQueryObject extends QueryObject
 {
-    const OBJECT_NAME = "ObjectSelector";
+    public const OBJECT_NAME = "ObjectSelector";
 
     public function selectOthers(?RootOthersArgumentsObject $argsObject = null): OtherQueryObject
     {

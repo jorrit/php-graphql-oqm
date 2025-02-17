@@ -188,7 +188,7 @@ class %3$s
         if (!empty($this->constants)) {
             foreach ($this->constants as $name => $value) {
                 $value = $this->serializeParameterValue($value);
-                $string .= "    const $name = $value;" . PHP_EOL;
+                $string .= "    public const $name = $value;" . PHP_EOL;
             }
         }
 

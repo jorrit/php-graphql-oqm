@@ -6,5 +6,5 @@ use GraphQL\SchemaObject\QueryObject;
 
 class InterfaceObject2QueryObject extends QueryObject
 {
-    const OBJECT_NAME = "InterfaceObject2";
+    public const OBJECT_NAME = "InterfaceObject2";
 }

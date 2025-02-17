@@ -6,5 +6,5 @@ use GraphQL\SchemaObject\QueryObject;
 
 class EmptyQueryObject extends QueryObject
 {
-    const OBJECT_NAME = "Empty";
+    public const OBJECT_NAME = "Empty";
 }

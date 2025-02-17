@@ -6,7 +6,7 @@ use GraphQL\SchemaObject\QueryObject;
 
 class MultipleSimpleSelectorsQueryObject extends QueryObject
 {
-    const OBJECT_NAME = "MultipleSimpleSelectors";
+    public const OBJECT_NAME = "MultipleSimpleSelectors";
 
     public function selectFirstName(): self
     {

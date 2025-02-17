@@ -39,7 +39,7 @@ anotherScalar
 
 class SimpleUnionObject extends UnionObject
 {
-    const OBJECT_NAME = 'Simple';
+    public const OBJECT_NAME = 'Simple';
 
 
 
@@ -81,11 +81,11 @@ abstract class UnionSimpleSubTypeQueryObject extends QueryObject
 
 class UnionType1QueryObject extends UnionSimpleSubTypeQueryObject
 {
-    const OBJECT_NAME = 'Type1';
+    public const OBJECT_NAME = 'Type1';
 }
 
 class UnionType2QueryObject extends UnionSimpleSubTypeQueryObject
 {
-    const OBJECT_NAME = 'Type2';
+    public const OBJECT_NAME = 'Type2';
 }
 

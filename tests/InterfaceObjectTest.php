@@ -40,7 +40,7 @@ scalar
 
 class SimpleInterfaceObject extends InterfaceObject
 {
-    const OBJECT_NAME = 'Simple';
+    public const OBJECT_NAME = 'Simple';
 
 
 
@@ -74,11 +74,11 @@ abstract class InterfaceSimpleSubTypeQueryObject extends QueryObject
 
 class InterfaceType1QueryObject extends InterfaceSimpleSubTypeQueryObject
 {
-    const OBJECT_NAME = 'Type1';
+    public const OBJECT_NAME = 'Type1';
 }
 
 class InterfaceType2QueryObject extends InterfaceSimpleSubTypeQueryObject
 {
-    const OBJECT_NAME = 'Type2';
+    public const OBJECT_NAME = 'Type2';
 }
 
